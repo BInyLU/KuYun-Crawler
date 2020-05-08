@@ -1,0 +1,21 @@
+{
+  "name": "kuyun",
+  "version": "1.0.0",
+  "main": "asyncMapLimit.js",
+  "dependencies": {
+    "async": "^3.2.0",
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "superagent": "^5.2.2",
+    "underscore": "^1.10.2",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

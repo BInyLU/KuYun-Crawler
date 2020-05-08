@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.2/axios.js"></script>
+    <title>小陆云播v2.0</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .btnLists{
+            display: inline-block;
+            margin: 10px;
+        }
+        .clear {
+            clear: both;
+        }
+
+        .box {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .box .img {
+            float: left;
+            width: 200px;
+        }
+
+        .box .main {
+            float: left;
+            margin-left: 2%;
+            width: 75%;
+        }
+
+        .box .main .href {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .box .img img {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h1>小陆云播v2.0</h1>
+        <p>扒取酷云视频资源。</p>
+        <p>UI还没写。</p>
+        <p>更新：Vue、高并发控制、动态IP代理、动态请求头部、伪造客户端请求</p>
+        <div>
+            <input type="text" v-model="searchTxt">
+            <button @click="searchClick">搜索</button>
+        </div>
+        <div>
+            <div v-for="(item,index) in btnList" :key="index" class="btnLists">
+                <button @click="navClick(index)">{{ item }}</button>
+            </div>
+        </div>
+        <div>
+            <h2>{{ cart }}</h2>
+        </div>
+        <p v-if="isLoading">正在加载中...扒取过程可能会比正常网页加载要慢...</p>
+        <div v-if="!isLoading">
+            <div v-for="(item,index) in home" class="box" >
+                <!-- <p>{{ index }}</p> -->
+                <div class="img">
+                    <img :src="item.img" alt="">
+                </div>
+                <div class="main">
+                    <div class="title">
+                        <h2>{{ item.title }}</h2>
+                    </div>
+                    <div class="desc">
+                        {{ item.desc }}
+                    </div>
+                    <div class="href" v-for="(href,hindex) in item.href">
+                        <a :href="href" target="_blank"><span>第{{ hindex + 1 }}集</span></a>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                home: [],
+                searchTxt: '',
+                isLoading: true,
+                cart: '首页',
+                btnList: [
+                    "首页","电影", "连续", "综艺", "动漫", "动作", "喜剧", "爱情", "科幻", "恐怖", "剧情", "战争", "国产", "香港","台湾","日本","动画","微电影","纪录片","韩国","欧美","海外",
+                ]
+            },
+            created() {
+                this.navClick();
+            },
+            methods: {
+                navClick(index) {
+                    if(!index) index = 0;
+                    this.isLoading = true;
+                    let that = this;
+                    console.log(this.btnList[index])
+                    this.cart = this.btnList[index];
+                    axios.get('/index?id=' + index).then(function (res) {
+                        that.home = res.data.data;
+                        that.isLoading = false;
+                        console.log(that.home)
+                    }).catch(function (error) {
+                        console.log(error);
+                        that.isLoading = false;
+                        that.cart = "获取数据失败！请检查网络";
+                    });
+                },
+                searchClick(){
+                    let that = this;
+                    this.isLoading = true;
+                    this.cart = "搜索结果";
+                    axios.get('/search?id=' + this.searchTxt).then(function (res) {
+                        that.home = res.data.data;
+                        that.isLoading = false;
+                        console.log(that.home)
+                    }).catch(function (error) {
+                        console.log(error);
+                        that.isLoading = false;
+                        that.cart = "获取数据失败！请检查网络";
+                    });
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
